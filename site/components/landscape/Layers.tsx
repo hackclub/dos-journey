@@ -22,7 +22,7 @@ interface BookData {
   actions: ActionData[],
 }
 
-export default function Layers({ data, children }:{ data: BookData, children: ReactNode }) {
+export default function Layers({ data, children }:{ data: BookData, children?: ReactNode }) {
   const { layers, actions } = data;
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -61,6 +61,7 @@ export default function Layers({ data, children }:{ data: BookData, children: Re
 
   return (
     <>
+    <div className="w-screen h-screen relative top-0 left-0 overflow-hidden">
       {
         layers.map((layer, i) => (
           <div className="w-screen h-screen scale-125 absolute flex justify-center items-center overflow-hidden transition-all ease-out pointer-events-none" key={i} style={{
@@ -77,6 +78,7 @@ export default function Layers({ data, children }:{ data: BookData, children: Re
           </div>
         ))
       }
+    </div>
       {
         actions.map((action, i) => (
           <Fragment key={i}>

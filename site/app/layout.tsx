@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="en">
-      <body className={`phantom-sans overflow-hidden`}>
+      <body className={`phantom-sans`}>
         <SessionProvider>
           {children}
         </SessionProvider>

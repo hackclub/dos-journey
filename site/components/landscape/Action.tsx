@@ -2,7 +2,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { Fragment, ReactNode, useEffect, useState } from "react";
-import SidePanel from "../book-content/SidePanel";
+import SidePanel from "../book-content/layout/SidePanel";
+import Icon from "@hackclub/icons";
 
 interface MapTransitionProps {
   variant: 'map-transition';
@@ -65,7 +66,7 @@ export default function Action(props: ActionProps) {
   return (
     <>
     <button 
-      className="h-16 w-16 rounded-full border-4 border-white bg-hc-primary absolute z-[30] transition-[width] hover:w-32 pointer-events-auto flex justify-center items-center hover:cursor-pointer overflow-hidden"
+      className="h-16 w-16 rounded-full border-4 border-white bg-hc-primary absolute z-[30] transition-[width] hover:w-52 delay-300 px-2 pointer-events-auto flex justify-center gap-1 items-center hover:cursor-pointer overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
@@ -74,21 +75,19 @@ export default function Action(props: ActionProps) {
         left: followData ? `calc(${percentY}% + ${followData.basePosition.left}px)` : `${percentX}%`,
       }}
     >
-      <Transition
-        show={!isHovered}
-        enter="transition-all duration-100 delay-[500ms] overflow-hidden"
-        enterFrom="opacity-0 w-0"
-        enterTo="opacity-100 w-fit"
-      >
-        <span className="font-bold text-white whitespace-nowrap text-lg">?</span>
-      </Transition>
+      <span className="font-bold text-white whitespace-nowrap">
+        <Icon glyph="rep" size={48} />
+      </span>
       <Transition
         show={isHovered}
-        enter="transition-all overflow-hidden duration-100 delay-[500ms]"
+        enter="transition-all overflow-hidden duration-100 delay-[750ms]"
         enterFrom="opacity-0 w-0"
         enterTo="opacity-100 w-fit"
+        leave="transition-all overflow-hidden duration-100"
+        leaveFrom="opacity-100 w-fit"
+        leaveTo="opacity-0 w-0"
       >
-        <span className="font-bold text-white whitespace-nowrap text-lg">Get Started</span>
+        <span className="font-bold text-white whitespace-nowrap text-2xl">Get Started</span>
       </Transition>
     </button>
     { variant === 'side-panel' && (

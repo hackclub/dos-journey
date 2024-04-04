@@ -47,7 +47,7 @@ export default function WelcomeModal() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-[85vw] h-[85vh] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all p-4">
+                <Dialog.Panel className="w-[85vw] h-[85vh] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all p-6">
 
                   <div className="bg-[#373E2F] w-full h-full rounded-2xl p-12">
                     {
@@ -60,11 +60,8 @@ export default function WelcomeModal() {
                           <button className="w-full bg-hc-primary font-bold text-white rounded-full mt-10 text-center py-3 text-4xl" onClick={() => router.push('/map?stage=1')}>Proceed</button>
                         </div>
                       ) : (
-                        <div id="inspiration" className="text-white flex-col">
+                        <div id="inspiration" className="text-white flex flex-col h-full py-12">
                           <UnauthenticatedWelcomeMessage />
-                          <button className="w-full bg-hc-primary font-bold text-white rounded-full mt-10 text-center py-3 text-4xl" onClick={() => signIn(undefined, {
-                            callbackUrl: '/'
-                          })}>Log in with Slack</button>
                         </div>
                       )
                     }

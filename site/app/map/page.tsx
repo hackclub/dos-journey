@@ -1,12 +1,14 @@
 import { promises as fs } from 'fs';
 import Layers from "@/components/landscape/Layers";
 import Icon from '@hackclub/icons';
+import dynamic from 'next/dynamic';
+import MDXStyleProvider from '@/components/book-content/styling/MDXStyleProvider';
 
 export default async function Map({ searchParams }: { searchParams: { stage?: number } }) {
   const file = await fs.readFile(process.cwd() + '/app/data.json', 'utf8');
   const data = JSON.parse(file);
 
-  const Content = await import(`@/mdx-content/book-${searchParams.stage}/GettingStarted.mdx`);
+  const Content = await dynamic(() => import(`@/mdx-content/book-${searchParams.stage}/GettingStarted.mdx`));
 
 
   return (
@@ -16,7 +18,7 @@ export default async function Map({ searchParams }: { searchParams: { stage?: nu
         backgroundColor: data[`book-${searchParams.stage}`].options.bgColor || 'white',
       }}> 
         <Layers data={data[`book-${searchParams.stage}`]}>
-          <Content />
+          <MDXStyleProvider><Content /></MDXStyleProvider>
         </Layers>
         <div className="absolute bottom-[5vh] z-20 flex items-center justify-center w-screen">
           <div className='bg-white p-3 text-xl rounded-full flex gap-3'>
