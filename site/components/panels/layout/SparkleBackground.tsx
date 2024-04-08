@@ -1,5 +1,4 @@
 'use client';
-
 import { useRef, useEffect, MutableRefObject, ReactNode } from "react";
 
 export default function SidePanelBackground({children}:{children: ReactNode}) {
@@ -20,10 +19,10 @@ export default function SidePanelBackground({children}:{children: ReactNode}) {
     return () => window.removeEventListener("mousemove", handler);
   }, []);
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <div
         id="spotlight"
-        className="font-phantom-sans opacity-75 w-full min-h-screen bg-[length:40px_40px] bg-repeat absolute top-0 left-0 z-[-1] bg-[url('https://icons.hackclub.com/api/icons/0xF2A5B2/glyph:rep.svg')]"
+        className="font-phantom-sans opacity-25 w-full min-h-screen bg-[length:40px_40px] bg-repeat fixed top-0 left-0 z-[-1] bg-[url('https://icons.hackclub.com/api/icons/0xF2A5B2/glyph:rep.svg')]"
       >
         <div
           ref={spotlightRef as MutableRefObject<HTMLDivElement> }
@@ -31,7 +30,7 @@ export default function SidePanelBackground({children}:{children: ReactNode}) {
         />
       </div>
 
-      <div className="px-8 py-20 bg-white/50 background-blur-lg h-full">
+      <div className="">
         {children}
       </div>
     </div>

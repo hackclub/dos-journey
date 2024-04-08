@@ -3,26 +3,12 @@ import { useState, useEffect, ReactNode, Fragment } from "react";
 import Layer3D from "./Layer3D";
 import Image from "next/image";
 import Action from "./Action";
+import { ActionData, Page } from "@/types/Pathways";
+import DevelopmentSettings from "@/DEVELOPMENT_SETTINGS";
 
-interface Layer {
-  book: 1 | 2 | 3 | 4,
-  image: string;
-  
-}
 
-interface ActionData {
-  title: string,
-  link: `/${string}`,
-  x: number,
-  y: number
-}
-
-interface BookData {
-  layers: string[],
-  actions: ActionData[],
-}
-
-export default function Layers({ data, children }:{ data: BookData, children?: ReactNode }) {
+export default function Layers({ data, children }:{ data: Page | { layers: string[], actions: ActionData[] }, children?: ReactNode }) {
+  const { ANIMATE_LAYERS } = DevelopmentSettings;
   const { layers, actions } = data;
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -37,6 +23,7 @@ export default function Layers({ data, children }:{ data: BookData, children?: R
   }, []);
 
   function handleMouseMove(event: MouseEvent) {
+    if (!ANIMATE_LAYERS) return;
     const { clientX, clientY } = event;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -82,13 +69,13 @@ export default function Layers({ data, children }:{ data: BookData, children?: R
       {
         actions.map((action, i) => (
           <Fragment key={i}>
-            <Action percentX={action.x} percentY={action.y} variant="side-panel" title={action.title} link={action.link} follow={{
+            <Action percentX={action.x} percentY={action.y} title={action.title} route={action.route} follow={{
               src: 2,
               basePosition: {
                 top: -1 * (divPosition.top + 0.3),
                 left: -1 * (divPosition.left + 0.3)
               }
-            }}>
+            }} icon={action.icon}>
               {children}
             </Action>
           </Fragment>

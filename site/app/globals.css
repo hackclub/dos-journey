@@ -38,3 +38,25 @@
 .phantom-sans {
   font-family: 'Phantom Sans';
 }
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #ec3750 #fdebed;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 16px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #fdebed;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #ec3750;
+    border-radius: 10px;
+    border: 7px none #240f0f;
+  }

@@ -1,7 +1,8 @@
 import Icon from "@hackclub/icons";
 import { Transition, Dialog } from "@headlessui/react";
 import { Dispatch, Fragment, ReactNode, SetStateAction } from "react";
-import SidePanelBackground from "./SidePanelBackground";
+import SidePanelBackground from "./SparkleBackground";
+import ActionSegue from "./ActionSegue";
 
 export default function SidePanel({
   openPanel, setOpenPanel, title, children
@@ -22,7 +23,7 @@ export default function SidePanel({
           <div className="fixed inset-0 bg-black/25 z-[1]" />
         </Transition.Child>
 
-        <div className="fixed inset-0 z-[2] overflow-y-auto overflow-x-clip">
+        <div className="fixed inset-0 z-[2] overflow-x-clip">
           <div className="flex min-h-full items-center justify-end">
             <Transition.Child
               as={Fragment}
@@ -33,32 +34,29 @@ export default function SidePanel({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Panel className="h-screen w-[70vw] translate-x-0 overflow-hidden bg-hc-secondary p-4 text-left align-middle shadow-xl">
+              <Dialog.Panel className="h-screen w-[70vw] translate-x-0 overflow-hidden bg-hc-secondary text-left shadow-xl">
                 <SidePanelBackground>
-                  <div className="flex items-center gap-4">
-                    <Icon glyph="expand" className="text-hc-primary stroke-4" size={72}></Icon>
-                    <Dialog.Title
-                      as="h2"
-                      className="text-6xl font-bold leading-6 text-hc-primary whitespace-nowrap"
-                    >
-                      {title}
-                    </Dialog.Title>
+                  <div className="p-14">
+                    <div className="flex items-center gap-4 text-hc-primary">
+                      <Icon glyph="expand" size={72}></Icon>
+                      <Dialog.Title
+                        as="h2"
+                        className="text-5xl font-bold whitespace-nowrap"
+                      >
+                        {title}
+                      </Dialog.Title>
 
-                    <div className="w-full h-3 bg-hc-primary"></div>
-                  </div>
-                  <div className="mt-2 prose lg:prose-xl">
-                    {children}
+                      <div className="w-full h-3 bg-hc-primary"></div>
+                    </div>
+                    <div className="mt-2">
+                      {children}
+                    </div>
+
+                    <div className="mt-4">
+                      <ActionSegue />
+                    </div>
                   </div>
 
-                  <div className="mt-4">
-                    {/* <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={() => setOpenPanel(false)}
-                    >
-                      Close
-                    </button> */}
-                  </div>
                 </SidePanelBackground>
               </Dialog.Panel>
             </Transition.Child>
