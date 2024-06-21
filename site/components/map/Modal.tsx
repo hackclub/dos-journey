@@ -29,7 +29,7 @@ export default function Map() {
           </button>
           <button className="rounded-full pl-2 pr-3 bg-hc-primary font-bold flex items-center text-white gap-1 hover:bg-white hover:text-hc-primary border-[3px] border-transparent hover:border-hc-primary transition">
             <Icon glyph="person" size={32} />
-            My Profile (not yet built)
+            My Profile
           </button>
         </div>
       </div>
