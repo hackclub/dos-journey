@@ -39,24 +39,25 @@
   font-family: 'Phantom Sans';
 }
 
-/* ===== Scrollbar CSS ===== */
-  /* Firefox */
-  * {
-    scrollbar-width: auto;
-    scrollbar-color: #ec3750 #fdebed;
-  }
+* {
+  overscroll-behavior: none;
+}
 
-  /* Chrome, Edge, and Safari */
-  *::-webkit-scrollbar {
-    width: 16px;
-  }
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #ec3750 #fdebed;
+}
 
-  *::-webkit-scrollbar-track {
-    background: #fdebed;
-  }
+*::-webkit-scrollbar {
+  width: 16px;
+}
 
-  *::-webkit-scrollbar-thumb {
-    background-color: #ec3750;
-    border-radius: 10px;
-    border: 7px none #240f0f;
-  }
+*::-webkit-scrollbar-track {
+  background: #fdebed;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #ec3750;
+  border-radius: 10px;
+  border: 7px none #240f0f;
+}

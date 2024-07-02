@@ -19,7 +19,7 @@ export function ResourceCard({ image, name, description, link, options }:{ image
       }}>
         <div className="absolute top-0 right-0 p-4">
           <span className="transition group-hover:translate-x-6 group-hover:translate-y-6">
-            <Icon glyph="external" size={32} />
+            <img src="https://icons.hackclub.com/api/icons/hackclub-red/external" className="size-[32px]" alt="" />
           </span>
         </div>
         <div>

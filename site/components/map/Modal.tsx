@@ -24,11 +24,11 @@ export default function Map() {
       <div className="absolute bottom-[5vh] z-20 flex items-center justify-center w-screen">
         <div className='bg-white p-3 text-xl rounded-full flex gap-3'>
           <button className="rounded-full pl-2 pr-3 bg-hc-primary font-bold flex items-center text-white gap-1 hover:bg-white hover:text-hc-primary border-[3px] border-transparent hover:border-hc-primary transition" onClick={openMapHome}>
-            <Icon glyph="compass" size={32} />
+            <img src="https://icons.hackclub.com/api/icons/white/compass" className="size-[32px]" alt="" />
             Map
           </button>
           <button className="rounded-full pl-2 pr-3 bg-hc-primary font-bold flex items-center text-white gap-1 hover:bg-white hover:text-hc-primary border-[3px] border-transparent hover:border-hc-primary transition">
-            <Icon glyph="person" size={32} />
+            <img src="https://icons.hackclub.com/api/icons/white/person" className="size-[32px]" alt="" />
             My Profile (not yet built)
           </button>
         </div>
@@ -68,16 +68,24 @@ export default function Map() {
 
                           <div className="gap-4 flex flex-col">
                             <Tooltip id="Progress" place="right" className="z-10"/>
-                            <Tab data-tooltip-id="Progress" data-tooltip-content="Map"><Icon glyph="compass" size={32} /></Tab>
+                            <Tab data-tooltip-id="Progress" data-tooltip-content="Map">
+                              <img src="https://icons.hackclub.com/api/icons/hackclub-red/compass" className="size-[32px]" alt="" />
+                            </Tab>
                             
                             <Tooltip id="Chapters" place="right" className="z-10" />
-                            <Tab data-tooltip-id="Chapters" data-tooltip-content="Chapters"><Icon glyph="expand" size={32} /></Tab>
+                            <Tab data-tooltip-id="Chapters" data-tooltip-content="Chapters">
+                              <img src="https://icons.hackclub.com/api/icons/hackclub-red/expand" className="size-[32px]" alt="" />
+                            </Tab>
 
                             <Tooltip id="Fast Forward" place="right" className="z-10" />
-                            <Tab data-tooltip-id="Fast Forward" data-tooltip-content="Fast Forward"><Icon glyph="rep" size={32} /></Tab>
+                            <Tab data-tooltip-id="Fast Forward" data-tooltip-content="Fast Forward">
+                              <img src="https://icons.hackclub.com/api/icons/hackclub-red/rep" className="size-[32px]" alt="" />
+                            </Tab>
                             
                             <Tooltip id="Achievements" place="right"  className="z-10"/>
-                            <Tab data-tooltip-id="Achievements" data-tooltip-content="Achievements"><Icon glyph="flag" size={32} /></Tab>
+                            <Tab data-tooltip-id="Achievements" data-tooltip-content="Achievements">
+                              <img src="https://icons.hackclub.com/api/icons/hackclub-red/flag" className="size-[32px]" alt="" />
+                            </Tab>
                           </div>
                         </div>
                         
@@ -109,7 +117,7 @@ export default function Map() {
                             </div>
                               <div className="w-full h-auto flex items-center justify-center aspect-[345_/_372]">
                                 <div className="bg-white h-20 w-20 rounded-full flex items-center justify-center text-gray-400">
-                                  <Icon glyph="private" size={72} />
+                                  <img src="https://icons.hackclub.com/api/icons/0x9ca3af/private" className="size-[72px]" alt="" />
                                 </div>
                               </div>
                             </div>
@@ -121,8 +129,8 @@ export default function Map() {
                               <div className="text-2xl font-bold text-hc-green group-hover:text-3xl duration-500 transition-all">Hacky with Hack Club</div>
                             </div>
                               <div className="w-full h-auto flex items-center justify-center aspect-[345_/_372]">
-                                <div className="bg-white h-20 w-20 rounded-full flex items-center justify-center text-gray-400">
-                                  <Icon glyph="private" size={72} />
+                                <div className="bg-white h-20 w-20 rounded-full flex items-center justify-center">
+                                  <img src="https://icons.hackclub.com/api/icons/0x9ca3af/private" className="size-[72px]" alt="" />
                                 </div>
                               </div>
                             </div>
@@ -135,7 +143,7 @@ export default function Map() {
                             </div>
                               <div className="w-full h-auto flex items-center justify-center aspect-[345_/_372]">
                                 <div className="bg-white h-20 w-20 rounded-full flex items-center justify-center text-gray-400">
-                                  <Icon glyph="private" size={72} />
+                                  <img src="https://icons.hackclub.com/api/icons/0x9ca3af/private" className="size-[72px]" alt="" />
                                 </div>
                               </div>
                             </div>

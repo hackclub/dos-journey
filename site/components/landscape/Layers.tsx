@@ -1,18 +1,20 @@
 'use client';
-import { useState, useEffect, ReactNode, Fragment } from "react";
-import Layer3D from "./Layer3D";
+import { useState, useEffect, ReactNode, Fragment, useRef } from "react";
 import Image from "next/image";
 import Action from "./Action";
 import { ActionData, Page } from "@/types/Pathways";
 import DevelopmentSettings from "@/DEVELOPMENT_SETTINGS";
+import classNames from "classnames";
 
 
 export default function Layers({ data, children }:{ data: Page | { layers: string[], actions: ActionData[] }, children?: ReactNode }) {
   const { ANIMATE_LAYERS } = DevelopmentSettings;
   const { layers, actions } = data;
+  const layerCollectionRef = useRef<HTMLDivElement>(null!);
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [divPosition, setDivPosition] = useState({ top: 0, left: 0 });
+  const [divPosition, setDivPosition] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
   
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
@@ -22,28 +24,26 @@ export default function Layers({ data, children }:{ data: Page | { layers: strin
     }
   }, []);
 
+  function mapRange(x: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+    return outMin + (((x - inMin) * (outMax - outMin)) / (inMax - inMin));
+  }
+
   function handleMouseMove(event: MouseEvent) {
     if (!ANIMATE_LAYERS) return;
-    const { clientX, clientY } = event;
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const centerX = viewportWidth / 2;
-    const centerY = viewportHeight / 2;
+    const { clientX: mouseX, clientY: mouseY } = event;
+    const centerX = innerWidth / 2;
+    const centerY = innerHeight / 2;
     
-    // Calculate position relative to the center of the viewport
-    const relativeX = clientX - centerX;
-    const relativeY = clientY - centerY;
-    
-    setMousePosition({ x: relativeX, y: relativeY });
+    const relativePosition = {
+      x: mouseX - centerX,
+      y: mouseY - centerY
+    };
 
-    const movementX = relativeX / 10;
-    const movementY = relativeY / 10;
-
-    // Calculate new position of the div
-    const newTop = viewportHeight / 2 + movementY - (window.innerHeight / 2);
-    const newLeft = viewportWidth / 2 + movementX - (window.innerWidth / 2);
-    
-    setDivPosition({ top: newTop, left: newLeft });
+    setMousePosition(relativePosition);
+    setDivPosition({
+      x: (relativePosition.x / 10),
+      y: (relativePosition.y / 10)
+    });
   };
 
   return (
@@ -51,16 +51,28 @@ export default function Layers({ data, children }:{ data: Page | { layers: strin
     <div className="w-screen h-screen relative top-0 left-0 overflow-hidden">
       {
         layers.map((layer, i) => (
-          <div className="w-screen h-screen scale-125 absolute flex justify-center items-center overflow-hidden transition-all ease-out pointer-events-none" key={i} style={{
-            top: -1 * (divPosition.top * ((i === 0 ? 0.8 : i) * 0.5) + 0.3),
-            left: -1 * (divPosition.left * ((i === 0 ? 0.8 : i) * 0.5) + 0.3),
+          <div className={classNames({
+            "w-[115vw] h-[115vh] absolute left-[-7.5vw] top-[-7.5vh] flex justify-center items-center overflow-visible transition-all ease-out pointer-events-none": true,
+          })} key={i} style={{
+            // top layers (ex 5, 6) should be moving the fastest while lower layers (ex 0, 1) should be moving slower
+            // we want for the max to be 1 and the min to be about what, 1/4?
+            // map: i on [0, length) to [0.25, 1]
+            // (i) / (length - 1) * (0.75) + 0.25
+            transform: `translate(${((i / (layers.length - 1) * 0.75 + 0.25) * -divPosition.x) * (1440 / window.innerWidth)}px, ${((i / (layers.length - 1) * 0.75) -divPosition.y) * (1024 / window.innerHeight)}px)`
+            // top: -1 * (divPosition.top * ((i === 0 ? 0.8 : i) * 0.5) + 0.3),
+            // left: -1 * (divPosition.left * ((i === 0 ? 0.8 : i) * 0.5) + 0.3),
           }}>
             <Image
               src={layer}
               alt=""
               width={1728}
               height={1117}
-              className="w-screen h-auto"
+              className={classNames({
+                "max-w-[unset]": true,
+                "w-[115vw] h-auto": true // (innerHeight * 1.15) * (1440 / 1024) < innerWidth,
+                // "ml-[-7.5vw] w-[115vw] h-auto": (window.innerHeight * 1.15) * (1440 / 1024) < window.innerWidth,
+                // "ml-[-7.5vw] mt-[-7.5vh] h-[115vh] w-auto": (window.innerWidth * 1.15) * (1024 / 1440) < window.innerHeight,
+              })}
             />
           </div>
         ))
@@ -70,11 +82,8 @@ export default function Layers({ data, children }:{ data: Page | { layers: strin
         actions.map((action, i) => (
           <Fragment key={i}>
             <Action percentX={action.x} percentY={action.y} title={action.title} route={action.route} follow={{
-              src: 2,
-              basePosition: {
-                top: -1 * (divPosition.top + 0.3),
-                left: -1 * (divPosition.left + 0.3)
-              }
+              src: layers.length - 1,
+              basePosition: divPosition
             }} icon={action.icon}>
               {children}
             </Action>
@@ -82,5 +91,14 @@ export default function Layers({ data, children }:{ data: Page | { layers: strin
         ))
       }
     </>
+  )
+}
+
+function VignetteOverlay() {
+  return (
+    <div className="fixed inset-0 z-[999] opacity-50 flex items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/0 to-black/80"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/0 to-black/80"></div>
+    </div>
   )
 }
