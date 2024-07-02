@@ -9,7 +9,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.vercel.app',
+        hostname: '*-hack-club-bot.vercel.app',
         port: '',
       },
     ],

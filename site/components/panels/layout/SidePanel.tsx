@@ -38,7 +38,7 @@ export default function SidePanel({
                 <SidePanelBackground>
                   <div className="p-14">
                     <div className="flex items-center gap-4 text-hc-primary">
-                      <Icon glyph="expand" size={72}></Icon>
+                      <img src="https://icons.hackclub.com/api/icons/hackclub-red/expand" className="size-[72px]" alt="" />
                       <Dialog.Title
                         as="h2"
                         className="text-5xl font-bold whitespace-nowrap"

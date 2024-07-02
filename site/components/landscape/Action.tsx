@@ -22,11 +22,11 @@ type ActionProps = (MapTransitionProps | SidePanelProps) & {
   /**
    * Enables following of a specific layer in mouse movement
    */
-  follow?: {
+  follow: {
     src: number,
     basePosition: {
-      top: number,
-      left: number,
+      x: number,
+      y: number,
     },
   };
   percentX: number;
@@ -67,12 +67,13 @@ export default function Action(props: ActionProps) {
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
       style={{
-        top: followData ? `calc(${percentY}% + ${followData.basePosition.top}px)` : `${percentY}%`,
-        left: followData ? `calc(${percentX}% + ${followData.basePosition.left}px)` : `${percentX}%`,
+        top: `${(percentY * 1.15) - 7.5}vh`,
+        left: `${(percentX * 1.15) - 7.5}vw`,
+        transform: `translate(${-props.follow.basePosition.x * (1440 / window.innerWidth)}px, ${-props.follow.basePosition.y * (1024 / window.innerHeight)}px)`
       }}
     >
       <span className="font-bold text-white whitespace-nowrap">
-        <Icon glyph={props.icon || 'rep'} size={48} />
+        <img src={`https://icons.hackclub.com/api/icons/white/${props.icon || 'rep'}`} className="size-[48px]" alt="" />   
       </span>
       <Transition
         show={isHovered}
