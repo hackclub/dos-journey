@@ -5,17 +5,45 @@ import { Highlight, themes } from "prism-react-renderer"
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 
 // reserved keywords when writing a snippet: 
-// INPUT_TEXT:KEY creates a text input in the snippet that is referred to with the name 'KEY'
-// INPUT_NUMBER:0 is specifically for integers
+// INPUT_TEXT:KEY:END creates a text input in the snippet that is referred to with the name 'KEY'
+// INPUT_NUMBER:NUMBER:END creates a 
+// INPUT_BOOLEAN:BOOLEAN:END is specifically for integers
 // regex: (INPUT_TEXT|INPUT_NUMBER|INPUT_BOOLEAN):([^:]+):END
 
 export default function CodeSnippet({ snippet, template }:{ snippet: string, template: string }) {
-  const [inputValues, setInputValues] = useState<{ [i: string] : string }>({});
+  // create template for input values (to prevent problems when nothing runs):
+  const generateTemplate = () => {
+    let inputTemplate: {[i: string]: string} = {};
+    snippet.split('\n').forEach(line => {
+      const regex = /'(INPUT_TEXT|INPUT_NUMBER|INPUT_BOOLEAN):([^:]+):END'/;
+      const match = Array.from(regex.exec(line) || []);
+  
+      if (match.length === 0) return;
+  
+      if (match[0]) {
+        const classifyDefaultValue = () => {
+          switch(match[1] as ('INPUT_TEXT' | 'INPUT_NUMBER' | 'INPUT_BOOLEAN')) {
+            case 'INPUT_TEXT':
+              return '';
+            case 'INPUT_NUMBER':
+              return '0';
+            case 'INPUT_BOOLEAN':
+              return 'true';
+          }
+        }
+        inputTemplate[match[2]] = classifyDefaultValue();
+      }
+    });
+    return inputTemplate;
+  }
+
+  // the rest of the component code
+  const [inputValues, setInputValues] = useState<{ [i: string] : string }>(generateTemplate());
+  console.log('default template', generateTemplate());
   const [inputArray, setInputArray] = useState(Object.entries(inputValues));
   const [showOutput, setShowOutput] = useState(false); 
 
   const handleRunButton = () => {
-    setInputValues(inputValues);
     setInputArray(Object.entries(inputValues));
     setShowOutput(true);
   }
@@ -35,16 +63,18 @@ export default function CodeSnippet({ snippet, template }:{ snippet: string, tem
         {({ style, tokens, getLineProps, getTokenProps }) => (
           <pre style={style} className="!my-2">
             {tokens.map((line, i) => (
-              <div key={i} {...getLineProps({ line })}>
+              <div key={i} {...getLineProps({ line })} className="flex">
                 <span className="mr-3 min-w-[2ch] text-white/50">{i + 1}</span>
-                {line.map((token, key) => {
-                  // console.log(token.content);
-                  return (
-                    <span key={key} {...getTokenProps({ token })}>
-                      <EvaluatedToken token={token.content} inputValues={inputValues} setInputValues={setInputValues}/>
-                    </span>
-                  )
-                })}
+                <span className="inline whitespace-pre-wrap">
+                  {line.map((token, key) => {
+                    // console.log(token.content);
+                    return (
+                      <span key={key} {...getTokenProps({ token })}>
+                        <EvaluatedToken token={token.content} inputValues={inputValues} setInputValues={setInputValues}/>
+                      </span>
+                    )
+                  })}
+                </span>
               </div>
             ))}
             <button className="p-2 bg-emerald-400/80 rounded-lg text-white flex w-full justify-center mt-4 active:translate-y-1 transition" onClick={handleRunButton}>
@@ -74,7 +104,7 @@ export default function CodeSnippet({ snippet, template }:{ snippet: string, tem
 function EvaluatedToken({ token, inputValues, setInputValues }:{ token: string, inputValues: { [i: string] : string }, setInputValues: Dispatch<SetStateAction<{ [i: string] : string }>> }) {
   const [inputContent, setInputContent] = useState('');
   const regex = /'(INPUT_TEXT|INPUT_NUMBER|INPUT_BOOLEAN):([^:]+):END'/;
-  console.log('token:', token);
+  // console.log('token:', token);
   const match = Array.from(regex.exec(token) || []);
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -103,13 +133,13 @@ function EvaluatedToken({ token, inputValues, setInputValues }:{ token: string, 
       {before}
       {/* this ⬇️ checks for whether or not the input even exists */}
       {/* if the input is typed with the keyboard (text or number) it will create a text box */}
-      {match.length > 0 && (
+      {match.length > 0 && (variant !== 'INPUT_BOOLEAN') && (
         <input type={variant.substring(6).toLowerCase()} className={classNames({
-          "h-fit border-b border-t-0 border-x-0 bg-transparent !border-[unset] active:outline-none focus:outline-none !ring-0 p-0 overflow-visible": true,
+          "h-fit border-b border-t-0 border-x-0 bg-transparent !border-[unset] active:outline-none focus:outline-none !ring-0 py-0 px-[1ch] overflow-visible": true,
           "min-w-[10ch] w-[10ch]": variant === 'INPUT_TEXT',
           "min-w-[5ch] w-[5ch]": variant === 'INPUT_NUMBER',
         })} style={{
-          width: `${inputContent.length + 3}ch`,
+          width: `${inputContent.length + 2}ch`,
           fontSize: 'inherit'
         }} onChange={onInputChange} />
       )}
@@ -147,11 +177,3 @@ function CodeResult({ template, inputs }:{ template: string, inputs: [string, st
     })
   )
 }
-
-
-/*
-the plan:
-
-to use the component, we can probably 
-
-*/

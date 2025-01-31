@@ -46,6 +46,39 @@ const STAGE_CONFIG: StageConfiguration = {
       ]
     }
   ],
+  'your-first-repo': [
+    {
+      title: "Becoming Technical: Where to Start?",
+      id: "getting-started",
+      options: {
+        bgColor: "#85DAFF"
+      },
+      layers: [
+        "https://cloud-d22eiu842-hack-club-bot.vercel.app/0untitled19_20240601213653.png",
+        "https://cloud-d22eiu842-hack-club-bot.vercel.app/1untitled19_20240601213657.png",
+        "https://cloud-d22eiu842-hack-club-bot.vercel.app/2untitled19_20240601213707.png",
+        "https://cloud-d22eiu842-hack-club-bot.vercel.app/3untitled19_20240601213710.png",
+        "https://cloud-d22eiu842-hack-club-bot.vercel.app/4untitled19_20240601213727.png",
+        "https://cloud-d22eiu842-hack-club-bot.vercel.app/5untitled19_20240601213731.png",
+        "https://cloud-d22eiu842-hack-club-bot.vercel.app/6untitled19_20240601213733.png"
+      ],
+      actions: [
+        {
+          title: "Get Started",
+          route: "side-panel",
+          x: 80.5,
+          y: 60.2
+        },
+        {
+          title: "Next: First Line of Code",
+          route: "/code/writing-your-first-line",
+          icon: "external",
+          x: 25,
+          y: 57.7
+        }
+      ]
+    }
+  ],
   code: [
     {
       title: "Writing Your First Line of Code",
