@@ -40,6 +40,7 @@ export type Page = {
 }
 
 export type StageConfiguration = {
+  [name: string]: Page[],
   discovery: Page[],
   code: Page[]
 }

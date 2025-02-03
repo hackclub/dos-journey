@@ -40,6 +40,7 @@ export default function Action(props: ActionProps) {
   const [followData, setFollowData] = useState(follow);
   const [isHovered, setIsHovered] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
+  const [win, setWindow] = useState<Window>(null!); // this + the useeffect is to silence "window is not defined" errors
 
   const handleClick = () => {
     switch (route) {
@@ -56,6 +57,7 @@ export default function Action(props: ActionProps) {
   }
 
   useEffect(() => {
+    setWindow(window);
     setFollowData(follow);
   }, [follow]);
 
@@ -69,7 +71,7 @@ export default function Action(props: ActionProps) {
       style={{
         top: `${(percentY * 1.15) - 7.5}vh`,
         left: `${(percentX * 1.15) - 7.5}vw`,
-        transform: `translate(${-props.follow.basePosition.x * (1440 / window.innerWidth)}px, ${-props.follow.basePosition.y * (1024 / window.innerHeight)}px)`
+        transform: `translate(${-props.follow.basePosition.x * (1440 / win?.innerWidth)}px, ${-props.follow.basePosition.y * (1024 / win?.innerHeight)}px)`
       }}
     >
       <span className="font-bold text-white whitespace-nowrap">

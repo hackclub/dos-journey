@@ -1,13 +1,13 @@
-import Icon from "@hackclub/icons";
+'use client';
 import { Transition, Dialog } from "@headlessui/react";
-import { Dispatch, Fragment, ReactNode, SetStateAction } from "react";
+import { Dispatch, Fragment, ReactNode, SetStateAction, useState } from "react";
 import SidePanelBackground from "./SparkleBackground";
 import ActionSegue from "./ActionSegue";
 
 export default function SidePanel({
   openPanel, setOpenPanel, title, children
 }:{ openPanel: boolean, setOpenPanel: Dispatch<SetStateAction<boolean>>, title: string, children: ReactNode }) {
-  
+  const [widePanel, setWidePanel] = useState(false);
   return (
     <Transition show={openPanel} as={Fragment}>
       <Dialog as={'div'} className="fixed z-40" onClose={() => setOpenPanel(false)}>
@@ -34,11 +34,18 @@ export default function SidePanel({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Panel className="h-screen w-[70vw] translate-x-0 overflow-hidden bg-hc-secondary text-left shadow-xl">
+              <Dialog.Panel className="h-screen transition-[width] translate-x-0 overflow-hidden bg-hc-secondary text-left shadow-xl"
+                style={{
+                  width: widePanel ? '100vw' : '70vw'
+                }}
+              >
                 <SidePanelBackground>
                   <div className="p-14">
                     <div className="flex items-center gap-4 text-hc-primary">
-                      <img src="https://icons.hackclub.com/api/icons/hackclub-red/expand" className="size-[72px]" alt="" />
+                      <button className="size-[52px] shrink-0" onClick={() => setWidePanel(!widePanel)}>
+                        <span className="sr-only">expand panel</span>
+                        <img src="https://icons.hackclub.com/api/icons/hackclub-red/expand" className="size-[52px]" alt="" />
+                      </button>
                       <Dialog.Title
                         as="h2"
                         className="text-5xl font-bold whitespace-nowrap"

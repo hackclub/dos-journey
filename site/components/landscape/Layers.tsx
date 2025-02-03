@@ -14,19 +14,16 @@ export default function Layers({ data, children }:{ data: Page | { layers: strin
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [divPosition, setDivPosition] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
+  const [win, setWindow] = useState<Window>(null!);
   
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
+    setWindow(window);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     }
   }, []);
-
-  function mapRange(x: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
-    return outMin + (((x - inMin) * (outMax - outMin)) / (inMax - inMin));
-  }
 
   function handleMouseMove(event: MouseEvent) {
     if (!ANIMATE_LAYERS) return;
@@ -58,7 +55,7 @@ export default function Layers({ data, children }:{ data: Page | { layers: strin
             // we want for the max to be 1 and the min to be about what, 1/4?
             // map: i on [0, length) to [0.25, 1]
             // (i) / (length - 1) * (0.75) + 0.25
-            transform: `translate(${((i / (layers.length - 1) * 0.75 + 0.25) * -divPosition.x) * (1440 / window.innerWidth)}px, ${((i / (layers.length - 1) * 0.75) -divPosition.y) * (1024 / window.innerHeight)}px)`
+            transform: `translate(${((i / (layers.length - 1) * 0.75 + 0.25) * -divPosition.x) * (1440 / win?.innerWidth)}px, ${((i / (layers.length - 1) * 0.75) -divPosition.y) * (1024 / win?.innerHeight)}px)`
             // top: -1 * (divPosition.top * ((i === 0 ? 0.8 : i) * 0.5) + 0.3),
             // left: -1 * (divPosition.left * ((i === 0 ? 0.8 : i) * 0.5) + 0.3),
           }}>

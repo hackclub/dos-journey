@@ -1,3 +1,19 @@
+import CodeSnippet from '@/components/panels/add-ons/CodeSnippet';
+
 <iframe className="w-full h-auto aspect-video" width="1120" height="630" src="https://www.youtube.com/embed/hLCCbJw6Osg?si=Hy8VzH4C6oTEZDGL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-Ready to get started on your computer science journey?
+## Welcome to DOS Journey!
+*Choose your own adventure...*
+
+Play around with the code snippet below?
+
+<CodeSnippet snippet={`// Put your name and age in the code below and click "Run" to see what happens!
+const name: string = 'INPUT_TEXT:NAME:END';
+const age: number = 'INPUT_NUMBER:AGE:END';
+const isAnAwesomeHackClubber = 'INPUT_BOOLEAN:HACK_CLUBBER:END';
+console.log("My name is " + name + "!");
+console.log("I am " + age + " years old.");
+console.log("People have asked if I'm an awesome hack clubber, and to that I say it is " + isAnAwesomeHackClubber + " 😎");
+`} template={`My name is NAME!
+I am AGE years old.
+People have asked if I'm an awesome hack clubber, and to that I say it is HACK_CLUBBER 😎`}/>
