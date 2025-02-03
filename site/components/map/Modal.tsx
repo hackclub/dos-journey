@@ -1,41 +1,20 @@
-'use client';
-
 import Icon from '@hackclub/icons'
 import { Dialog, Tab, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Fragment, useContext } from 'react';
 import { Tooltip } from 'react-tooltip';
+import { MapIsOpenContext } from '../island/Modal'
 import Image from 'next/image';
 import DraggableMap from './DraggableMap';
 import AchievementsTab from './AchievementsTab';
 
+
 export default function Map() {
-  let [mapIsOpen, setMapIsOpen] = useState(false)
-
-  function closeMapHome() {
-    setMapIsOpen(false);
-  }
-
-  function openMapHome() {
-    setMapIsOpen(true);
-  }
-
+  const { mapIsOpen, setMapIsOpen } = useContext(MapIsOpenContext)
   return (
     <>
-      <div className="absolute bottom-[5vh] z-20 flex items-center justify-center w-screen">
-        <div className='bg-white p-3 text-xl rounded-full flex gap-3'>
-          <button className="rounded-full pl-2 pr-3 bg-hc-primary font-bold flex items-center text-white gap-1 hover:bg-white hover:text-hc-primary border-[3px] border-transparent hover:border-hc-primary transition" onClick={openMapHome}>
-            <img src="https://icons.hackclub.com/api/icons/white/compass" className="size-[32px]" alt="" />
-            Map
-          </button>
-          <button className="rounded-full pl-2 pr-3 bg-hc-primary font-bold flex items-center text-white gap-1 hover:bg-white hover:text-hc-primary border-[3px] border-transparent hover:border-hc-primary transition">
-            <img src="https://icons.hackclub.com/api/icons/white/person" className="size-[32px]" alt="" />
-            My Profile (not yet built)
-          </button>
-        </div>
-      </div>
-
-      <Transition appear show={mapIsOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-40" onClose={closeMapHome}>
+      <MapIsOpenContext.Provider value={{ mapIsOpen: mapIsOpen, setMapIsOpen: setMapIsOpen }}>      
+        <Transition appear show={mapIsOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-40" onClose={() => setMapIsOpen(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -89,7 +68,7 @@ export default function Map() {
                           </div>
                         </div>
                         
-                        <button className="p-2 bg-hc-primary/20 rounded-md w-full" onClick={closeMapHome}>Close</button>
+                        <button className="p-2 bg-hc-primary/20 rounded-md w-full" onClick={() => setMapIsOpen(false)}>Close</button>
                       </Tab.List>
                       <Tab.Panels className="w-full min-h-full">
                         <Tab.Panel className="w-full h-full bg-hc-green overflow-hidden">
@@ -164,6 +143,7 @@ export default function Map() {
           </div>
         </Dialog>
       </Transition>
+      </MapIsOpenContext.Provider>
     </>
   )
 }

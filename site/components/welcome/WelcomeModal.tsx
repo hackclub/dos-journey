@@ -1,15 +1,18 @@
 'use client';
 import { Transition, Dialog } from '@headlessui/react';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useContext } from 'react';
 import { signIn, useSession } from "next-auth/react";
 import UnauthenticatedWelcomeMessage from './UnauthenticatedWelcomeMessage';
 import { useRouter } from 'next/navigation';
+import { MapIsOpenContext } from '../island/Modal';
 
 export default function WelcomeModal() {
   const session = useSession();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(session.status === 'authenticated');
-   
+
+  const { mapIsOpen, setMapIsOpen } = useContext(MapIsOpenContext)
+
   return (
     <>
       <button className="font-bold text-white bg-hc-primary px-8 py-4 text-3xl rounded-full" onClick={() => setIsOpen(true)}>Start Hacking</button>
@@ -47,7 +50,7 @@ export default function WelcomeModal() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-[85vw] h-[85vh] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all p-6">
+                <Dialog.Panel className="w-[85vw] h-[85vh] transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all p-6">
 
                   <div className="bg-[#373E2F] w-full h-full rounded-2xl p-12">
                     {
@@ -57,7 +60,7 @@ export default function WelcomeModal() {
                             <div className="text-5xl font-bold text-white">Hello <span className="text-hc-secondary">{session.data.user!.name}</span>!</div>
                             <div className="text-xl text-white">You've successfully logged in with Slack. Proceed with your journey...</div>
                           </div>
-                          <button className="w-full bg-hc-primary font-bold text-white rounded-full mt-10 text-center py-3 text-4xl" onClick={() => router.push('/map?stage=1')}>Proceed</button>
+                          <button className="w-full bg-hc-primary font-bold text-white rounded-full mt-10 text-center py-3 text-4xl" onClick={() => router.push("/adventure/discovery/getting-started")}>Proceed</button>
                         </div>
                       ) : (
                         <div id="inspiration" className="text-white flex flex-col h-full py-12">

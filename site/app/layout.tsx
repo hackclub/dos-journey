@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Days of Service Journey",
   description:
-    "Hack Club’s interactive initiative to support girls learning to code",
+    "Hack Club's interactive initiative to support girls learning to code",
 }
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
