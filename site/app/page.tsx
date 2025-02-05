@@ -24,7 +24,7 @@ export default async function Index() {
       <div className="relative z-10">
         <div className="flex flex-col w-screen h-screen justify-center items-center gap-6">
           {/* hero section, check auth for ongoing session and this will say continue hacking instead of start, otherwise you'll have to scroll to the bottom to start hacking (or something like that) */}
-          <h1 className="text-7xl font-bold text-hc-blue drop-shadow">A Girl's STEM Journey at Hack Club</h1>
+          <h1 className="text-7xl font-bold text-hc-blue drop-shadow">Athena Award</h1>
           <WelcomeModal />
         </div>
         <div className="w-screen h-screen bg-hc-secondary">
