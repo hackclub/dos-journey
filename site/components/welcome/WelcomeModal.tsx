@@ -17,7 +17,7 @@ export default function WelcomeModal() {
         body: JSON.stringify({
             email: session.data!.user.email,
           }),
-        headers: { Authorization: "Bearer " + session.data!.access_token}
+        headers: { Authorization: "Bearer " + btoa(session.data!.access_token! + ":" + process.env.AUTH_SECRET!)}
   }).then(r => r.json())
     return res
   }

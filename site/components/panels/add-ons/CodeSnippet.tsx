@@ -54,14 +54,14 @@ export default function CodeSnippet({ snippet, template }:{ snippet: string, tem
   }, [inputValues])
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-3">
       <Highlight
         theme={themes.dracula}
         code={snippet}
         language="tsx"
       >
         {({ style, tokens, getLineProps, getTokenProps }) => (
-          <pre style={style} className="!my-2">
+          <pre style={style}>
             {tokens.map((line, i) => (
               <div key={i} {...getLineProps({ line })} className="flex">
                 <span className="mr-3 min-w-[2ch] text-white/50">{i + 1}</span>

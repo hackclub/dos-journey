@@ -1,15 +1,15 @@
 import Icon from '@hackclub/icons'
 import { Dialog, Tab, Transition } from '@headlessui/react'
-import { Fragment, useContext } from 'react';
+import { Fragment, useContext  } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { MapIsOpenContext } from '../island/Modal'
-import Image from 'next/image';
 import DraggableMap from './DraggableMap';
 import AchievementsTab from './AchievementsTab';
-
+import { useRouter } from 'next/navigation';
 
 export default function Map() {
   const { mapIsOpen, setMapIsOpen } = useContext(MapIsOpenContext)
+  const router = useRouter()
   return (
     <>
       <MapIsOpenContext.Provider value={{ mapIsOpen: mapIsOpen, setMapIsOpen: setMapIsOpen }}>      
@@ -75,7 +75,7 @@ export default function Map() {
                           <DraggableMap />
                         </Tab.Panel>
                         <Tab.Panel className="flex max-w-full items-stretch h-full">
-                          <div className="basis-1/4 group hover:basis-1/3 text-center transition-all delay-100 duration-500 ease-out bg-hc-secondary px-4 flex flex-col justify-center items-center" role="button" onClick={() => console.log('clicked')}>
+                          <div className="basis-1/4 group hover:basis-1/3 text-center transition-all delay-100 duration-500 ease-out bg-hc-secondary px-4 flex flex-col justify-center items-center" role="button" onClick={() => {router.push("/adventure/discovery/getting-started"); console.log('clicked')}}>
                             <div className="flex justify-center flex-col items-center">
                               <div className="text-4xl font-bold text-hc-primary group-hover:text-5xl whitespace-nowrap duration-500 transition-all">1</div>
                               <div className="text-2xl font-bold text-hc-primary group-hover:text-3xl whitespace-nowrap duration-500 transition-all">Discovery</div>

@@ -1,31 +1,12 @@
 import Icon from '@hackclub/icons'
 import { Dialog, Tab, Transition } from '@headlessui/react'
-import { Fragment, useState, useContext, FormEvent } from 'react'
+import { Fragment, useState, useContext, FormEvent, useEffect } from 'react'
 import { signIn, useSession } from "next-auth/react";
 import { Tooltip } from 'react-tooltip';
 import Image from 'next/image';
 import { ProfileIsOpenContext } from '../island/Modal';
 import { Session } from 'next-auth';
-
-
-async function submitCode(event: FormEvent<HTMLFormElement>, email: string){
-  event.preventDefault()
-  const formData = new FormData(event.currentTarget)
-  const fo = JSON.parse(JSON.stringify(Object.fromEntries(formData)))
-  if (fo.code){
-    const response = await fetch(`/api/hackathon/${fo.code}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        "email": email // to do: encrypt this lmfao
-      })
-    })
-    return response.json()
-  }
-  return {"message": "Error: Code not provided"}
-
-}
-
-
+import { Warning } from '@/components/panels/add-ons/Callout';
 
 export default function Profile(){
     const { profileIsOpen, setProfileIsOpen } = useContext(ProfileIsOpenContext)
@@ -34,9 +15,32 @@ export default function Profile(){
     const session = useSession();
     function clear(){
       setProfileIsOpen(false)
-      setHackathonName("")
       setError("")
     }
+
+    async function submitCode(event: FormEvent<HTMLFormElement>){
+      event.preventDefault()
+      const formData = new FormData(event.currentTarget)
+      const fo = JSON.parse(JSON.stringify(Object.fromEntries(formData)))
+      if (fo.code){
+        const response = await fetch(`/api/hackathon/${fo.code}`, {
+          method: 'POST'
+        })
+        return response.json()
+      }
+      return {"error": "Code not provided"}
+    }
+    async function fetchHackathons(){
+      const response = fetch(`/api/hackathon`, {
+        method: 'GET'
+      }).then(r => r.json()).then(data => setHackathonName(data["message"]))
+      return response
+    }
+
+    useEffect(() => {
+      fetchHackathons()
+    }, [])
+
     return (
         <>
 <ProfileIsOpenContext.Provider value={{profileIsOpen: profileIsOpen, setProfileIsOpen: setProfileIsOpen}}>
@@ -65,10 +69,10 @@ export default function Profile(){
                 leaveFrom="opacity-100 scale-100 translate-y-0"
                 leaveTo="opacity-0 scale-95 translate-y-[50vh]"
               >
-                <Dialog.Panel className="w-full h-[80vh] max-w-5xl transform overflow-hidden rounded-xl bg-white text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full h-[80vh] max-w-5xl transform overflow-scroll rounded-xl bg-white text-left align-middle shadow-xl transition-all">
                   <div className="flex min-h-full">
                     <Tab.Group vertical>
-                      <Tab.List className="h-[80vh] flex flex-col p-6 justify-between items-center rounded-l-xl text-hc-primary bg-hc-secondary w-32">
+                      <Tab.List className="h-[80vh] sticky flex flex-col p-6 justify-between items-center rounded-l-xl text-hc-primary bg-hc-secondary w-32">
                         <div className="flex flex-col justify-evenly items-center grow">
                           <div className="-rotate-90 font-bold text-2xl px-7 whitespace-nowrap">PROFILE</div>
                         </div>
@@ -76,7 +80,7 @@ export default function Profile(){
                       </Tab.List>
                       <Tab.Panels className="w-full min-h-full">
                     <Tab.Panel className="w-full h-full p-10">
-                    <h2 className="text-4xl text-hc-primary font-bold">Profile</h2>
+                    <h2 className="text-4xl text-hc-primary font-bold">Profile {process.env.AUTH_SECRET}</h2>
                     <div className = "text-xl">
                         {session.status === "authenticated" ? 
                         <div>
@@ -116,16 +120,19 @@ export default function Profile(){
                             Submit the unique code here:{' '}
                             <form className = "flex flex-row gap-5 my-4" onSubmit={ async (event) => { 
                                 {
-                                  let hackathon = await submitCode(event, session.data!.user!.email!)
+                                  let hackathon = await submitCode(event)
                                   setHackathonName(hackathon.message)
-                                  console.log(hackathon.error)
                                   setError(hackathon.error)
                                   } }}>
                               <input type="text" name="code"/>
                               <button type="submit">Submit</button>
                             </form>
-                            <div className = "text-sm">{ hackathonName ? 
-                              <span>Congratulations! Now registered as an attendee of <b>{hackathonName}</b></span> : error }</div>
+                            <div className = "text-sm">{ (hackathonName)
+                            ? <span>Congratulations! You're registered as an attendee of <b>{hackathonName}</b></span> 
+                            : (error) 
+                              ? <Warning title = "Error">{error}</Warning> 
+                              : null }
+                            </div>
                         </div>
                     </div>
                     </Tab.Panel>

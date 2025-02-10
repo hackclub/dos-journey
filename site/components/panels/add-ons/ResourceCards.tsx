@@ -11,7 +11,7 @@ export function ResourceCard({ image, name, description, link, options }:{ image
     router.push(link);
   }
   return (
-    <div className="not-prose max-w-sm w-full group lg:max-w-full lg:flex hover:scale-105 transition shadow-md relative cursor-pointer rounded-lg" style={{
+    <div className="not-prose w-full group lg:max-w-full lg:flex hover:scale-105 transition shadow-md relative cursor-pointer rounded-lg" style={{
       backgroundColor: options?.backgroundColor || '#FFF',
     }} title={`Programming Resource at ${link}`} onClick={handleClick}>
       <div className="h-auto w-32 flex-none bg-cover rounded-l-lg text-center overflow-hidden shrink-0" style={{backgroundImage: `url(${image})`}}>
@@ -34,8 +34,8 @@ export function ResourceCard({ image, name, description, link, options }:{ image
 export function ResourceSection({ children }:{ children: ReactNode }) {
   return (
     <div>
-      <div className="text-2xl text-hc-primary font-bold mb-2">Resources</div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="text-2xl text-hc-primary font-bold mb-2 mt-6">Resources</div>
+      <div className="flex flex-col md:flex-row gap-4">
         {children}
       </div>
     </div>
