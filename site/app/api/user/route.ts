@@ -18,7 +18,7 @@ async function linkUser(emailAddress: string, accessToken: string){
         }
     ).then(res => res.json())
     const id = response["user"]["id"]
-    const r = await airtable("Registered Users").select({filterByFormula: `{Email} = "${emailAddress}"`}).all()
+    const r = await airtable("Registered Users").select({filterByFormula: `{email} = "${emailAddress}"`}).all()
     if (r.length) { // user exists in DB
         return ("User exists in DB")
     } else { // user is logging on for the first time
@@ -26,9 +26,9 @@ async function linkUser(emailAddress: string, accessToken: string){
         const l = await airtable("Registered Users").create(
             [{
                 fields: {
-            "Email": emailAddress,
-            "Slack ID": id,
-            "Hashed Token": accessTokenJoined
+            "email": emailAddress,
+            "slack_id": id,
+            "hashed_token": accessTokenJoined
                         }
         }])
     return "User added to DB"

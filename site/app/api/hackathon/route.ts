@@ -11,16 +11,16 @@ const airtable = new Airtable({
 // Get a list of hackathons the user is noted as attending
 async function getHackathonStatus(emailAddress: string, accessTokenEncrypted: string){
     const recordID = await airtable("Registered Users").select({
-        filterByFormula: `{Email} = "${emailAddress}"`,
+        filterByFormula: `{email} = "${emailAddress}"`,
         maxRecords: 2,
-        fields: ["Hackathons", "Hashed Token"]
+        fields: ["hackathons", "hashed_token"]
     }).all()
 
     const prettyRecordID = JSON.parse(JSON.stringify(recordID)) // jank
-    if (!(verifySession(prettyRecordID[0]["fields"]["Hashed Token"], accessTokenEncrypted))){
+    if (!(verifySession(prettyRecordID[0]["fields"]["hashed_token"], accessTokenEncrypted))){
         throw "Unauthorized"
     }
-    return prettyRecordID[0]["fields"]["Hackathons"]
+    return prettyRecordID[0]["fields"]["hackathons"]
 
 }
 export async function GET(request: Request){
