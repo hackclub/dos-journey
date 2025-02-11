@@ -34,9 +34,8 @@ export default function SidePanel({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Dialog.Panel className="h-screen transition-[width] translate-x-0 overflow-hidden bg-hc-secondary text-left shadow-xl"
+              <Dialog.Panel className={`h-screen transition-[width] max-md:w-[100vw] ${ widePanel ? 'md:w-[100vw]' : 'md:w-[70vw]' } translate-x-0 overflow-hidden bg-hc-secondary text-left shadow-xl`}
                 style={{
-                  width: widePanel ? '100vw' : '70vw'
                 }}
               >
                 <SidePanelBackground>

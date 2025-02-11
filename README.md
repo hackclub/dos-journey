@@ -32,7 +32,7 @@ A Hack Club project gamifying the experience of learning to code through the [Da
 
 ### Setting up ngrok
 
-*You will need this for the next step*
+*You will need this for the next step - other ngrok alternatives will work here, provided you configure it correctly.*
 
 1. Create an [ngrok account](https://download.ngrok.com/) and follow the instructions to install it on your device. 
 2. Complete the onboarding stage and deploy your app on a static domain. The command you run should look something like this:

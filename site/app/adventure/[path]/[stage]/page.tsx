@@ -1,10 +1,11 @@
 'use client'
 import Layers from "@/components/landscape/Layers";
 import MapModal from '@/components/map/Modal';
+import ProfileModal from '@/components/profile/Modal';
 import IslandModal from '@/components/island/Modal';
 import dynamic from 'next/dynamic';
 import MDXStyleProvider from '@/components/panels/layout/styling/MDXStyleProvider';
-import { MapIsOpenContext } from "@/components/island/Modal";
+import { MapIsOpenContext, ProfileIsOpenContext } from "@/components/island/Modal";
 import { AdventureChapter } from '@/types/Pathways';
 import { notFound, useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -23,6 +24,8 @@ export default function Stage() {
   const SidePanelContent = dynamic(() => import(`@/mdx-content/${path}/${stage}/index.mdx`));
   
   const [mapIsOpen, setMapIsOpen] = useState(false);
+  const [profileIsOpen, setProfileIsOpen] = useState(false);
+
   return (
     <main className="block w-screen h-screen" style={{
       backgroundColor: currentStage!.options?.bgColor || 'white',
@@ -30,11 +33,13 @@ export default function Stage() {
       <Layers data={currentStage!}>
         <MDXStyleProvider><SidePanelContent /></MDXStyleProvider>
       </Layers>
-
-      <MapIsOpenContext.Provider value={{mapIsOpen: mapIsOpen, setMapIsOpen: setMapIsOpen}}>
-        <IslandModal />
-        <MapModal /> {/* THIS IS NO LONGER THE CASE ~~both the button and the map modals are under MapModal~~*/}
-      </MapIsOpenContext.Provider>
+      <ProfileIsOpenContext.Provider value = {{profileIsOpen: profileIsOpen, setProfileIsOpen: setProfileIsOpen}}>
+        <MapIsOpenContext.Provider value={{mapIsOpen: mapIsOpen, setMapIsOpen: setMapIsOpen}}>
+          <IslandModal />
+          <MapModal />
+          <ProfileModal/>
+        </MapIsOpenContext.Provider>
+      </ProfileIsOpenContext.Provider>
     </main>
   )
 }

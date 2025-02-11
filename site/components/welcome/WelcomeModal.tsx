@@ -4,14 +4,23 @@ import { Fragment, useEffect, useState, useContext } from 'react';
 import { signIn, useSession } from "next-auth/react";
 import UnauthenticatedWelcomeMessage from './UnauthenticatedWelcomeMessage';
 import { useRouter } from 'next/navigation';
-import { MapIsOpenContext } from '../island/Modal';
 
 export default function WelcomeModal() {
   const session = useSession();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(session.status === 'authenticated');
 
-  const { mapIsOpen, setMapIsOpen } = useContext(MapIsOpenContext)
+  async function registerUser() {
+    const res = await fetch('/api/user',  
+      {
+        method: "POST", 
+        body: JSON.stringify({
+            email: session.data!.user.email,
+          }),
+        headers: { Authorization: "Bearer " + btoa(session.data!.access_token! + ":" + process.env.AUTH_SECRET!)}
+  }).then(r => r.json())
+    return res
+  }
 
   return (
     <>
@@ -60,7 +69,7 @@ export default function WelcomeModal() {
                             <div className="text-5xl font-bold text-white">Hello <span className="text-hc-secondary">{session.data.user!.name}</span>!</div>
                             <div className="text-xl text-white">You've successfully logged in with Slack. Proceed with your journey...</div>
                           </div>
-                          <button className="w-full bg-hc-primary font-bold text-white rounded-full mt-10 text-center py-3 text-4xl" onClick={() => router.push("/adventure/discovery/getting-started")}>Proceed</button>
+                          <button className="w-full bg-hc-primary font-bold text-white rounded-full mt-10 text-center py-3 text-4xl" onClick={() => {router.push("/adventure/discovery/getting-started"); registerUser() }}>Proceed</button>
                         </div>
                       ) : (
                         <div id="inspiration" className="text-white flex flex-col h-full py-12">

@@ -7,7 +7,7 @@ export default function ActionSegue() {
   const [ready, setReady] = useState(false);
 
   return (
-    <div className="flex min-w-full justify-between">
+    <div className="flex flex-col md:flex-row sm:justify-between">
       <div className="flex gap-4 text-hc-green text-lg italic items-center">
       <input 
         type="checkbox" 

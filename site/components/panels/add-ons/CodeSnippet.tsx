@@ -10,7 +10,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "reac
 // INPUT_BOOLEAN:BOOLEAN:END is specifically for integers
 // regex: (INPUT_TEXT|INPUT_NUMBER|INPUT_BOOLEAN):([^:]+):END
 
-export default function CodeSnippet({ snippet, template }:{ snippet: string, template: string }) {
+export default function CodeSnippet({ snippet, template, status = true }:{ snippet: string, template: string, status: boolean }) {
   // create template for input values (to prevent problems when nothing runs):
   const generateTemplate = () => {
     let inputTemplate: {[i: string]: string} = {};
@@ -39,7 +39,6 @@ export default function CodeSnippet({ snippet, template }:{ snippet: string, tem
 
   // the rest of the component code
   const [inputValues, setInputValues] = useState<{ [i: string] : string }>(generateTemplate());
-  console.log('default template', generateTemplate());
   const [inputArray, setInputArray] = useState(Object.entries(inputValues));
   const [showOutput, setShowOutput] = useState(false); 
 
@@ -50,7 +49,6 @@ export default function CodeSnippet({ snippet, template }:{ snippet: string, tem
 
   useEffect(() => {
     const inputArray = Object.entries(inputValues);
-    console.log(inputArray);
   }, [inputValues])
 
   return (
@@ -61,7 +59,7 @@ export default function CodeSnippet({ snippet, template }:{ snippet: string, tem
         language="tsx"
       >
         {({ style, tokens, getLineProps, getTokenProps }) => (
-          <pre style={style} className="!my-2">
+          <pre style={style}>
             {tokens.map((line, i) => (
               <div key={i} {...getLineProps({ line })} className="flex">
                 <span className="mr-3 min-w-[2ch] text-white/50">{i + 1}</span>
@@ -77,9 +75,12 @@ export default function CodeSnippet({ snippet, template }:{ snippet: string, tem
                 </span>
               </div>
             ))}
-            <button className="p-2 bg-emerald-400/80 rounded-lg text-white flex w-full justify-center mt-4 active:translate-y-1 transition" onClick={handleRunButton}>
-              &gt; Run
-            </button>
+            { status 
+            ? <button className="p-2 bg-emerald-400/80 rounded-lg text-white flex w-full justify-center mt-4 active:translate-y-1 transition" onClick={handleRunButton}>
+            &gt; Run
+          </button>
+          : null}
+
           </pre>
         )}
       </Highlight>
@@ -123,7 +124,6 @@ function EvaluatedToken({ token, inputValues, setInputValues }:{ token: string, 
   type SnippetElement = 'INPUT_TEXT' | 'INPUT_NUMBER' | 'INPUT_BOOLEAN';
 
   const variant: SnippetElement = match[1] as SnippetElement;
-  console.log(match);
 
   const before = token.substring(0, token.indexOf(match[0]));
   const after = token.substring(token.indexOf(match[0]) + match[0]?.length);
@@ -157,10 +157,6 @@ function EvaluatedToken({ token, inputValues, setInputValues }:{ token: string, 
 }
 
 function CodeResult({ template, inputs }:{ template: string, inputs: [string, string][] }) {
-
-  useEffect(() => {
-    console.log(inputs);
-  }, [inputs])
 
   return (
     template.split('\n').map((l, index) => {
