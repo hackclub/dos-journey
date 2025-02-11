@@ -24,25 +24,33 @@ async function validateHackathon(hackathonCode: string){
 // Update hackathon attendance in the user's profile (MAKE SURE TO VALIDATE HACKATHON FIRST)
 async function linkUserToHackathon(emailAddress: string, hackathonCode: string, hackathonName: string, accessTokenEncrypted: string){
         const recordID = await airtable("Registered Users").select({
-            filterByFormula: `{Email} = "${emailAddress}"`,
+            filterByFormula: `{email} = "${emailAddress}"`,
             maxRecords: 2,
-            fields: ["Record ID", "Hashed Token"]
+            fields: ["record_id", "hashed_token"]
         }).all()
 
         const prettyRecordID = JSON.parse(JSON.stringify(recordID)) // jank
-        if (!(verifySession(prettyRecordID[0]["fields"]["Hashed Token"], accessTokenEncrypted))){
+        if (!(verifySession(prettyRecordID[0]["fields"]["hashed_token"], accessTokenEncrypted))){
             throw "Unauthorized"
         }
 
-        await airtable("Registered Users").update([ // TO DO: upsert 
-            {
-                "id": prettyRecordID[0]["id"],
-                "fields": {
-                    "Hackathon Codes": hackathonCode,
-                    "Hackathons": hackathonName
-                }
+        const existingRecords = JSON.parse(JSON.stringify(await airtable("Registered Users")
+            .select({filterByFormula: `{email} = "${emailAddress}"`})
+            .all()))[0]["fields"]
+
+        if (!(existingRecords["hackathon_codes"].includes(hackathonCode))){
+            await airtable("Registered Users").update([
+                {
+                    "id": prettyRecordID[0]["id"],
+                    "fields": {
+                        "hackathon_codes": existingRecords["hackathon_codes"] + ", " + hackathonCode,
+                        "hackathons": existingRecords["hackathons"] + ", " + hackathonName
+                    }
             }])
-        return hackathonName
+            return {message: hackathonName, status: 200}
+        } else {
+            return {error: "You can't join a hackathon you're already in 😔", status: 409}
+        }
 }
 
 
@@ -53,10 +61,10 @@ export async function POST(request: Request, { params }: { params: Promise<{slug
     const encryptedToken = encryptSession(session!.access_token!, process.env.AUTH_SECRET!)
     const hackathon = await validateHackathon(code)
     if (hackathon){
-      const response = await linkUserToHackathon(session!.user.email!, code, hackathon[0]["fields"]["Name"], encryptedToken)
-      return NextResponse.json({message: response}, {status: 200 });
+        const response = await linkUserToHackathon(session!.user.email!, code, hackathon[0]["fields"]["Name"], encryptedToken)
+        return NextResponse.json(response)
     } else {
-        return NextResponse.json({error: "Not a valid hackathon code. Double check you've typed it in correctly!"}, { status: 404 })
+        return NextResponse.json({error: "Invalid hackathon code; double check that it's correct - hackathon codes are case-sensitive!"}, { status: 404 })
     }
 }
 

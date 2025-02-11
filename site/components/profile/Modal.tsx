@@ -28,12 +28,12 @@ export default function Profile(){
         })
         return response.json()
       }
-      return {"error": "Code not provided"}
+      return {"error": "Hey! Why are you trying to join a hackathon that doesn't exist? 🤔"}
     }
     async function fetchHackathons(){
       const response = fetch(`/api/hackathon`, {
         method: 'GET'
-      }).then(r => r.json()).then(data => setHackathonName(data["message"]))
+      }).then(r => r.json()).then(data => {console.log(data["message"]); setHackathonName(data["message"])})
       return response
     }
 
@@ -101,7 +101,7 @@ export default function Profile(){
                                     {session.data.user!.email}
                                 </div> 
                                 <div>
-                                  <b>Hackathon:</b>{' '}
+                                  <b>Hackathons:</b>{' '}
                                     { hackathonName ? hackathonName : "None" }
                                 </div>
                                 </div>
@@ -121,17 +121,17 @@ export default function Profile(){
                             <form className = "flex flex-row gap-5 my-4" onSubmit={ async (event) => { 
                                 {
                                   let hackathon = await submitCode(event)
-                                  setHackathonName(hackathon.message)
+                                  fetchHackathons()
                                   setError(hackathon.error)
                                   } }}>
                               <input type="text" name="code"/>
                               <button type="submit">Submit</button>
                             </form>
-                            <div className = "text-sm">{ (hackathonName)
-                            ? <span>Congratulations! You're registered as an attendee of <b>{hackathonName}</b></span> 
-                            : (error) 
-                              ? <Warning title = "Error">{error}</Warning> 
-                              : null }
+                            <div className = "text-sm">
+                              { (error) ? <Warning title = "Error">{error}</Warning> :
+                                (hackathonName) ? <span>Congratulations! You're registered as an attendee of <b>{hackathonName}</b></span> :
+                                null
+                              }
                             </div>
                         </div>
                         </Fragment>
