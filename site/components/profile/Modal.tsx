@@ -38,8 +38,10 @@ export default function Profile(){
     }
 
     useEffect(() => {
-      fetchHackathons()
-    }, [])
+      if (session.status === "authenticated"){
+        fetchHackathons()
+      }
+    }, [profileIsOpen])
 
     return (
         <>
@@ -82,7 +84,9 @@ export default function Profile(){
                     <Tab.Panel className="w-full h-full p-10">
                     <h2 className="text-4xl text-hc-primary font-bold">Profile {process.env.AUTH_SECRET}</h2>
                     <div className = "text-xl">
+                      <div>
                         {session.status === "authenticated" ? 
+                        <Fragment>
                         <div>
                             <div className = "flex md:flex-row flex-col gap-8">
                                 <img className = "rounded-full w-4/12 mx-auto md:m-0" src = {`${session.data.user!.image}`}></img>
@@ -102,11 +106,7 @@ export default function Profile(){
                                 </div>
                                 </div>
                                 </div>
-                            </div>:                          
-                            <div>
-                                Not signed in.
-                            </div> 
-                        }
+                            </div>
                         <div>
                         <h1 className="text-2xl text-hc-primary">Other</h1>
                             Part of a{' '}
@@ -134,6 +134,13 @@ export default function Profile(){
                               : null }
                             </div>
                         </div>
+                        </Fragment>
+                        :                          
+                        <div>
+                            Not signed in. <a href = {process.env.NEXT_PUBLIC_BASE_URL}>Sign in</a>
+                        </div> 
+                    }
+                      </div>
                     </div>
                     </Tab.Panel>
                     </Tab.Panels>
