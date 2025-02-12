@@ -16,14 +16,18 @@ export const config = {
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-        },
-      };
+    async jwt({token, account}) {
+      if (account) {
+        token = Object.assign({}, token, { access_token: account.access_token });
+      }
+      return token
     },
+    async session({session, token, user}) {
+    if(session) {
+      session = Object.assign({}, { ...session }, {access_token: token.access_token})
+      }
+    return { ...session }
+    }
   },
 } satisfies NextAuthConfig
 
