@@ -69,7 +69,7 @@ export default function WelcomeModal() {
                             <div className="text-5xl font-bold text-white">Hello <span className="text-hc-secondary">{session.data.user!.name}</span>!</div>
                             <div className="text-xl text-white">You've successfully logged in with Slack. Proceed with your journey...</div>
                           </div>
-                          <button className="w-full bg-hc-primary font-bold text-white rounded-full mt-10 text-center py-3 text-4xl" onClick={() => {router.push("/adventure/discovery/getting-started"); registerUser() }}>Proceed</button>
+                          <button className="w-full bg-hc-primary font-bold text-white rounded-full mt-10 text-center py-3 text-4xl" onClick={() => {router.push("/map"); registerUser() }}>Proceed</button>
                         </div>
                       ) : (
                         <div id="inspiration" className="text-white flex flex-col h-full py-12">
