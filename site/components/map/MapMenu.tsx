@@ -5,8 +5,10 @@ import { AnimatePresence, motion, Variant, Variants } from "motion/react"
 import Image from "next/image";
 import { Dialog, Tab, Transition } from "@headlessui/react";
 import { Tooltip } from "react-tooltip";
-import { MapIsOpenContext } from "../island/Modal";
+import { ProfileIsOpenContext } from "../island/Modal";
 import classNames from "classnames";
+import { useSession } from "next-auth/react";
+
 // TODO: make it so you can switch between the landscape with all of the interactive content + the map menu
 
 interface UserStageData {
@@ -233,8 +235,11 @@ export default function MapMenu({ module, progress = compositeUserModuleData, se
   const nextModule = progress[(currModuleIdx + 1) % progress.length].moduleName
   const prevModule = progress[(currModuleIdx - 1 + progress.length) % progress.length].moduleName
   const percentageProgressInThisModule = progress.find(p => p.moduleName === module)!.stages.filter(s => s.complete).length / progress.find(p => p.moduleName === module)!.stages.length * 100;
+  const session = useSession();
 
   return (
+    <div>
+    { session.status === "authenticated" ? 
     <div className={`w-screen h-screen relative ${baseModuleData.visuals.accents.primary}`}>
       <div className="fixed w-screen h-screen">
         <AnimatePresence>
@@ -263,9 +268,10 @@ export default function MapMenu({ module, progress = compositeUserModuleData, se
       </div>
       <AnimatePresence>
         {!fullscreen &&
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: [1, 0], transition: { delay: 0.5, duration: 0.75 } }} className={`w-screen h-screen px-20 py-14 fixed z-10 transition duration-700 backdrop-blur-xl ${baseModuleData.visuals.accents.primary}`}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: [1, 0], transition: { delay: 0.5, duration: 0.75 } }} className={`w-screen h-screen px-20 py-14 fixed overflow-y-scroll z-10 transition duration-700 backdrop-blur-xl ${baseModuleData.visuals.accents.primary}`}>
           <motion.div key={`${module}-full`} variants={slidingParentVariant} initial='hidden' animate='visible' className="grid grid-cols-5 gap-10">
-            <div className="col-span-3">
+          <ProfileModal />
+            <div className="col-span-full lg:col-span-3">
               <motion.div key={`${module}-img`} variants={slidingUpVariant} className='aspect-[3/2] bg-white group transition-all rounded-2xl' style={{
                 backgroundImage: `url('${baseModuleData!.visuals.src}')`,
                 backgroundSize: "cover",
@@ -286,8 +292,7 @@ export default function MapMenu({ module, progress = compositeUserModuleData, se
                 <div className="text-white text-base">{percentageProgressInThisModule}%</div>
               </motion.div>
             </div>
-            <div className="col-span-2 text-white">
-              <ProfileModal />
+            <div className="col-span-full lg:col-span-2 text-white">
               <motion.h2 variants={slidingUpVariant} transition={{ delay: 0.3 }} initial='hidden' animate='visible' className="text-3xl">Modules</motion.h2>
               <motion.div key={`${module}-details`} variants={slidingUpVariant} transition={{ delay: 0.4 }} initial='hidden' animate='visible' className="h-[30vh] overflow-scroll my-5 space-y-3 pr-4">
                 {userModuleData.stages.map((stage, i) => (
@@ -304,11 +309,11 @@ export default function MapMenu({ module, progress = compositeUserModuleData, se
                 </div>
               </div>
             </div>
-            <div className="col-span-3">
+            <div className="col-span-full lg:col-span-3">
               <h1 className="text-white font-bold text-5xl italic mb-3">{module}</h1>
               <motion.p variants={slidingUpVariant} transition={{ delay: 0.45 }} initial='hidden' animate='visible' className="text-white leading-normal text-lg italic font-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae sed consectetur nemo? Quod veniam ab illo quia architecto dignissimos, aliquam explicabo voluptatum mollitia beatae porro itaque possimus animi molestiae natus!</motion.p>
             </div>
-            <div className="col-span-2">
+            <div className="col-span-full lg:col-span-2"> {/* TO DO: move this section on top of the image on smaller screens */}
               <div className="w-full h-full relative">
                 <div className="absolute right-0 bottom-0 flex gap-2 items-center text-white">
                   <button onClick={() => {setModule(prevModule);}} className="playfair-display italic text-2xl">
@@ -328,8 +333,7 @@ export default function MapMenu({ module, progress = compositeUserModuleData, se
           </motion.div>
         </motion.div>}
       </AnimatePresence>
-      
-    </div>
+    </div> : "Loading" } </div>
   )
 }
 
@@ -350,24 +354,27 @@ export function StageChecklistItem({ title, link, complete, delay, module }:{ ti
         <svg className="size-7 peer" fillRule="evenodd" clipRule="evenodd" strokeLinejoin="round" strokeMiterlimit="1.414" xmlns="http://www.w3.org/2000/svg" aria-label="view-forward" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" fill="currentColor" width="48" height="48"><g><path d="M12.982,23.89c-0.354,-0.424 -0.296,-1.055 0.128,-1.408c1.645,-1.377 5.465,-4.762 6.774,-6.482c-1.331,-1.749 -5.1,-5.085 -6.774,-6.482c-0.424,-0.353 -0.482,-0.984 -0.128,-1.408c0.353,-0.425 0.984,-0.482 1.409,-0.128c1.839,1.532 5.799,4.993 7.2,6.964c0.219,0.312 0.409,0.664 0.409,1.054c0,0.39 -0.19,0.742 -0.409,1.053c-1.373,1.932 -5.399,5.462 -7.2,6.964l-0.001,0.001c-0.424,0.354 -1.055,0.296 -1.408,-0.128Z"></path></g></svg>
         <span className="text-sm opacity-0 peer-hover:opacity-100 transition">Go to activity</span>
       </button>
+      
     </motion.div>
   )
 }
 
 function ProfileModal() {
-  const { mapIsOpen, setMapIsOpen } = useContext(MapIsOpenContext)
-  // this will probably use data from the usesession hook but i dont have creds so you can fill this in as needed! 
+  const { profileIsOpen, setProfileIsOpen } = useContext(ProfileIsOpenContext)
+  const session = useSession();
   return (
     <>
+    <ProfileIsOpenContext.Provider value = {{profileIsOpen: profileIsOpen, setProfileIsOpen: setProfileIsOpen }}>
       <button onClick={() => {
-        console.log(mapIsOpen);
-        setMapIsOpen(true)
-      }} id="profile" className="mb-5 relative w-full">
+        console.log(profileIsOpen)
+        setProfileIsOpen(true);
+      }} id="profile" className="mb-5 absolute right-6 top-6 w-full">
         {/* <img src="" width={48} height={48} alt="Profile details" /> */}
         <span className="ml-auto size-10 rounded-full bg-cover bg-no-repeat bg-center block" style={{
-          backgroundImage: `url('https://th.bing.com/th/id/OIP.eC3EaX3LZiyZlEnZmQjhngHaEK?w=318&h=180&c=7&r=0&o=5&dpr=2&pid=1.')`
+          backgroundImage: `url('${session.data!.user.image ? session.data!.user.image : "https://th.bing.com/th/id/OIP.eC3EaX3LZiyZlEnZmQjhngHaEK?w=318&h=180&c=7&r=0&o=5&dpr=2&pid=1"}')`
         }}></span>
       </button>
+    </ProfileIsOpenContext.Provider>
     </>
   )
 }

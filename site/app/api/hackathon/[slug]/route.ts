@@ -38,13 +38,17 @@ async function linkUserToHackathon(emailAddress: string, hackathonCode: string, 
             .select({filterByFormula: `{email} = "${emailAddress}"`})
             .all()))[0]["fields"]
 
-        if (!(existingRecords["hackathon_codes"].includes(hackathonCode))){
+        let pastRecords = (existingRecords["hackathon_codes"], existingRecords["hackathons"]) 
+        ? [existingRecords["hackathon_codes"] + ", ", existingRecords["hackathons"] + ", ",] 
+        : ["", ""]
+
+        if (!(pastRecords[0].includes(hackathonCode))){
             await airtable("Registered Users").update([
                 {
                     "id": prettyRecordID[0]["id"],
                     "fields": {
-                        "hackathon_codes": existingRecords["hackathon_codes"] + ", " + hackathonCode,
-                        "hackathons": existingRecords["hackathons"] + ", " + hackathonName
+                        "hackathon_codes": pastRecords[0] + hackathonCode,
+                        "hackathons": pastRecords[1] + hackathonName
                     }
             }])
             return {message: hackathonName, status: 200}
