@@ -12,6 +12,8 @@ export default function Profile(){
     const { profileIsOpen, setProfileIsOpen } = useContext(ProfileIsOpenContext)
     const [ hackathonName, setHackathonName ] = useState("")
     const [ error, setError ] = useState("")
+    const [ currentStage, setCurrentStageName ] = useState("")
+
     const session = useSession();
     function clear(){
       setProfileIsOpen(false)
@@ -33,13 +35,21 @@ export default function Profile(){
     async function fetchHackathons(){
       const response = fetch(`/api/hackathon`, {
         method: 'GET'
-      }).then(r => r.json()).then(data => {console.log(data["message"]); setHackathonName(data["message"])})
+      }).then(r => r.json()).then(data => {setHackathonName(data["message"])})
       return response
     }
+
+    async function fetchStage(){
+      const response = fetch('/api/user', {
+        method: 'GET'
+      }).then(r => r.json()).then(data => {setCurrentStageName(data["message"])})
+      return response
+      }
 
     useEffect(() => {
       if (session.status === "authenticated"){
         fetchHackathons()
+        fetchStage()
       }
     }, [profileIsOpen])
 
@@ -71,10 +81,10 @@ export default function Profile(){
                 leaveFrom="opacity-100 scale-100 translate-y-0"
                 leaveTo="opacity-0 scale-95 translate-y-[50vh]"
               >
-                <Dialog.Panel className="w-full h-[80vh] max-w-5xl transform overflow-scroll rounded-xl bg-white text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full h-[80vh] max-w-5xl transform overflow-auto rounded-xl bg-white text-left align-middle shadow-xl transition-all">
                   <div className="flex min-h-full">
                     <Tab.Group vertical>
-                      <Tab.List className="h-[80vh] sticky flex flex-col p-6 justify-between items-center rounded-l-xl text-hc-primary bg-hc-secondary w-32">
+                      <Tab.List className="h-[80vh] hidden sm:flex flex-col p-6 justify-between items-center rounded-l-xl text-hc-primary bg-hc-secondary w-32">
                         <div className="flex flex-col justify-evenly items-center grow">
                           <div className="-rotate-90 font-bold text-2xl px-7 whitespace-nowrap">PROFILE</div>
                         </div>
@@ -82,7 +92,7 @@ export default function Profile(){
                       </Tab.List>
                       <Tab.Panels className="w-full min-h-full">
                     <Tab.Panel className="w-full h-full p-10">
-                    <h2 className="text-4xl text-hc-primary font-bold">Profile {process.env.AUTH_SECRET}</h2>
+                    <h2 className="text-4xl text-hc-primary font-bold">Profile</h2>
                     <div className = "text-xl">
                       <div>
                         {session.status === "authenticated" ? 
@@ -104,6 +114,10 @@ export default function Profile(){
                                   <b>Hackathons:</b>{' '}
                                     { hackathonName ? hackathonName : "None" }
                                 </div>
+                                <div>
+                                  <b>Current stage:</b> {' '}
+                                    { currentStage ? currentStage : "None"}
+                                </div>
                                 </div>
                                 </div>
                             </div>
@@ -118,14 +132,14 @@ export default function Profile(){
                                 hackathon?{' '}
                             </span> 
                             Submit the unique code here:{' '}
-                            <form className = "flex flex-row gap-5 my-4" onSubmit={ async (event) => { 
+                            <form className = "flex flex-col sm:flex-row gap-5 my-4" onSubmit={ async (event) => { 
                                 {
                                   let hackathon = await submitCode(event)
                                   fetchHackathons()
                                   setError(hackathon.error)
                                   } }}>
                               <input type="text" name="code"/>
-                              <button type="submit">Submit</button>
+                              <button type="submit" className="border rounded-lg bg-hc-primary/60 border-hc-primary/40 text-white p-2">Submit</button>
                             </form>
                             <div className = "text-sm">
                               { (error) ? <Warning title = "Error">{error}</Warning> :

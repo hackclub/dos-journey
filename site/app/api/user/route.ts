@@ -35,12 +35,38 @@ async function linkUser(emailAddress: string, accessToken: string){
     }
 }
 
+async function getUser(emailAddress: string, accessTokenEncrypted: string){
+    const recordID = await airtable("Registered Users").select({
+        filterByFormula: `{email} = "${emailAddress}"`,
+        maxRecords: 1,
+        fields: ["hashed_token", "current_stage"]
+    }).all()
+    const prettyRecordID = JSON.parse(JSON.stringify(recordID)) // jank
+    if (!(verifySession(prettyRecordID[0]["fields"]["hashed_token"], accessTokenEncrypted))){
+        throw "Unauthorized"
+    }
+    return prettyRecordID[0]["fields"]["current_stage"]
+}
+
 export async function POST(request: Request) {
     const session = await auth();
     const emailAddress = session!.user.email!
     try {
         const r = await linkUser(emailAddress, session!.access_token!)
         return NextResponse.json({message: "Success"}, {status: 200})
+    } catch {
+        return NextResponse.json({error: "Something went wrong."}, {status: 400})
+
+    }
+}
+
+export async function GET(request: Request) {
+    const session = await auth();
+    const emailAddress = session!.user.email!
+    const encryptedToken = encryptSession(session!.access_token!, process.env.AUTH_SECRET!)
+    try {
+        const response = await getUser(emailAddress, encryptedToken);
+        return NextResponse.json({message: response}, {status: 200})
     } catch {
         return NextResponse.json({error: "Something went wrong."}, {status: 400})
 

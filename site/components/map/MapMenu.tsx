@@ -8,6 +8,7 @@ import { Tooltip } from "react-tooltip";
 import { ProfileIsOpenContext } from "../island/Modal";
 import classNames from "classnames";
 import { useSession } from "next-auth/react";
+import { Loading, Unauthenticated } from "@/components/screens/Modal";
 
 // TODO: make it so you can switch between the landscape with all of the interactive content + the map menu
 
@@ -333,7 +334,11 @@ export default function MapMenu({ module, progress = compositeUserModuleData, se
           </motion.div>
         </motion.div>}
       </AnimatePresence>
-    </div> : "Loading" } </div>
+    </div> 
+    : session.status === "loading" 
+    ? <Loading/> 
+    : <Unauthenticated page="/"/> }
+    </div>
   )
 }
 
