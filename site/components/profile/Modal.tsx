@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { ProfileIsOpenContext } from '../island/Modal';
 import { Session } from 'next-auth';
 import { Warning } from '@/components/panels/add-ons/Callout';
+import { Achievements } from './Achievements';
 
 export default function Profile(){
     const { profileIsOpen, setProfileIsOpen } = useContext(ProfileIsOpenContext)
@@ -84,15 +85,22 @@ export default function Profile(){
                 <Dialog.Panel className="w-full h-[80vh] max-w-5xl transform overflow-auto rounded-xl bg-white text-left align-middle shadow-xl transition-all">
                   <div className="flex min-h-full">
                     <Tab.Group vertical>
-                      <Tab.List className="h-[80vh] hidden sm:flex flex-col p-6 justify-between items-center rounded-l-xl text-hc-primary bg-hc-secondary w-32">
+                      <Tab.List className="h-[80vh] sticky top-0 hidden sm:flex flex-col p-6 justify-between items-center rounded-l-xl text-hc-primary bg-hc-secondary w-32"> {/* fix not being able to see achievements on mobile */}
                         <div className="flex flex-col justify-evenly items-center grow">
-                          <div className="-rotate-90 font-bold text-2xl px-7 whitespace-nowrap">PROFILE</div>
+                          <Tooltip id="Profile" place="right"  className="z-10"/>
+                            <Tab data-tooltip-id="Profile" data-tooltip-content="Profile">
+                              <img src="https://icons.hackclub.com/api/icons/hackclub-red/person" className="size-[32px]" alt="" />
+                            </Tab>
+                          <Tooltip id="Achievements" place="right"  className="z-10"/>
+                            <Tab data-tooltip-id="Achievements" data-tooltip-content="Achievements">
+                              <img src="https://icons.hackclub.com/api/icons/hackclub-red/flag" className="size-[32px]" alt="" />
+                            </Tab>
                         </div>
                         <button className="p-2 bg-hc-primary/20 rounded-md w-full" onClick={() => clear()}>Close</button>
                       </Tab.List>
-                      <Tab.Panels className="w-full min-h-full">
+                    <Tab.Panels className="w-full min-h-full">
                     <Tab.Panel className="w-full h-full p-10">
-                    <h2 className="text-4xl text-hc-primary font-bold">Profile</h2>
+                    <h2 className="text-4xl text-hc-primary font-bold mb-3">Profile</h2>
                     <div className = "text-xl">
                       <div>
                         {session.status === "authenticated" ? 
@@ -157,9 +165,13 @@ export default function Profile(){
                       </div>
                     </div>
                     </Tab.Panel>
+                    <Tab.Panel className = "w-full h-full p-10">
+                    <h2 className="text-4xl text-hc-primary font-bold mb-3">Achievements</h2>
+                      <Achievements profileIsOpen={profileIsOpen}/>
+                      </Tab.Panel>
+
                     </Tab.Panels>
                     </Tab.Group>
-
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
