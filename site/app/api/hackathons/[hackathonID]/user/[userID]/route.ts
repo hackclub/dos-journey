@@ -1,3 +1,6 @@
+// POST api/hackathons/[hackathonID]/user/[userID]
+// Registers [userID] as an attendee of [hackathonID]
+
 import { NextResponse } from "next/server";
 import Airtable from 'airtable';
 import { auth } from '@/auth';
@@ -9,19 +12,19 @@ const airtable = new Airtable({
 
 // Check whether the code is valid for an existing (i.e., currently running) hackathon
 async function validateHackathon(hackathonCode: string){
-        const validity = await airtable("Hackathons").select({
-            filterByFormula: `AND({Code} = "${hackathonCode}", {Active?})`,
-            maxRecords: 1,
-            fields: ['Name']
-        }).all()
-    
-        if (!validity.length){
-            return false
-        }
-        return JSON.parse(JSON.stringify(validity))
+    const validity = await airtable("Hackathons").select({
+        filterByFormula: `AND({Code} = "${hackathonCode}", {Active?})`,
+        maxRecords: 1,
+        fields: ['Name']
+    }).all()
+
+    if (!validity.length){
+        return false
+    }
+    return JSON.parse(JSON.stringify(validity))
 }
 
-// Update hackathon attendance in the user's profile (MAKE SURE TO VALIDATE HACKATHON FIRST)
+
 async function linkUserToHackathon(emailAddress: string, hackathonCode: string, hackathonName: string, accessTokenEncrypted: string){
         const recordID = await airtable("Registered Users").select({
             filterByFormula: `{email} = "${emailAddress}"`,
@@ -58,10 +61,9 @@ async function linkUserToHackathon(emailAddress: string, hackathonCode: string, 
 }
 
 
-export async function POST(request: Request, { params }: { params: Promise<{slug: string}>} ) {
+export async function POST(request: Request, { params }: { params: Promise<{hackathonID: string}>} ) {
     const session = await auth();
-    const slug = ((await params).slug)
-    const code = await slug
+    const code = ((await params).hackathonID)
     const encryptedToken = encryptSession(session!.access_token!, process.env.AUTH_SECRET!)
     const hackathon = await validateHackathon(code)
     if (hackathon){
@@ -71,5 +73,3 @@ export async function POST(request: Request, { params }: { params: Promise<{slug
         return NextResponse.json({error: "Invalid hackathon code; double check that it's correct - hackathon codes are case-sensitive!"}, { status: 404 })
     }
 }
-
-
