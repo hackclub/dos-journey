@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+
 export function Loading(){
     const [ message, setMessage ] = useState("")
     const loadingMessages = [
@@ -25,12 +25,19 @@ export function Loading(){
 }
 
 export function Unauthenticated({page}: {page: string}){
-    const router = useRouter();
     return (
         <div className = "bg-black w-screen h-screen flex flex-col items-center justify-center">
             <h1 className="text-white text-2xl">Not logged in!</h1>
-            <p className="mt-2 text-white text-base">Click <a onClick={() => router.push(page)}>here</a> to sail home ⛵</p>
+            <p className="mt-2 text-white text-base">Click <a href = "/">here</a> to sail home ⛵</p>
         </div>
     )
+}
+
+
+export function Error({error}: {error: string}){
+    <div className = "bg-black w-screen h-screen flex flex-col items-center justify-center">
+    <h1 className="text-white text-2xl">Something's gone wrong!</h1>
+    <p className="mt-2 text-white text-base">{error}</p>
+</div>
 }
 

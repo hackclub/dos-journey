@@ -26,7 +26,7 @@ export default function Profile(){
       const formData = new FormData(event.currentTarget)
       const fo = JSON.parse(JSON.stringify(Object.fromEntries(formData)))
       if (fo.code){
-        const response = await fetch(`/api/hackathon/${fo.code}`, {
+        const response = await fetch(`/api/hackathons/${fo.code}/user/${session.data!.slack_id}`, {
           method: 'POST'
         })
         return response.json()
@@ -34,14 +34,14 @@ export default function Profile(){
       return {"error": "Hey! Why are you trying to join a hackathon that doesn't exist? 🤔"}
     }
     async function fetchHackathons(){
-      const response = fetch(`/api/hackathon`, {
+      const response = fetch(`/api/user/${session.data!.slack_id}/hackathons`, {
         method: 'GET'
       }).then(r => r.json()).then(data => {setHackathonName(data["message"])})
       return response
     }
 
     async function fetchStage(){
-      const response = fetch('/api/user', {
+      const response = fetch(`/api/user/${session.data!.slack_id}`, {
         method: 'GET'
       }).then(r => r.json()).then(data => {setCurrentStageName(data["message"])})
       return response

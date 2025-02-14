@@ -6,7 +6,7 @@ export function Achievements({profileIsOpen}: {profileIsOpen: boolean}){
     const [ achievements, setAchievements ] = useState("")
     const session = useSession();
     async function fetchAchievements(){
-        const response = fetch(`/api/achievements`, {
+        const response = fetch(`/api/user/${session.data!.slack_id}/achievements`, {
           method: 'GET'
         }).then(r => r.json()).then(data => {setAchievements(  data["message"] ? data["message"]: "" )})
         return response
