@@ -1,3 +1,5 @@
+// POST api/user
+// Create a new user
 import Airtable from 'airtable';
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
